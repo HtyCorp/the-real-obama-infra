@@ -18,11 +18,11 @@ export class PipelineStack extends Stack {
                     '../service': githubRepo('the-real-obama')
                 },
                 installCommands: [
-                    '../service/install.sh',
+                    '(cd ../service && ./install.sh)',
                     './install.sh',
                 ],
                 commands: [
-                    '../service/build.sh',
+                    '(cd ../service && ./build.sh)',
                     './build.sh'
                 ]
             })
