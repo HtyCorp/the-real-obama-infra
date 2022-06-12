@@ -2,7 +2,7 @@
   "name": "the-real-obama-infra",
   "version": "0.1.0",
   "bin": {
-    "the-real-obama-infra": "bin/the-real-obama-infra.js"
+    "app": "bin/app.js"
   },
   "scripts": {
     "build": "tsc",
