@@ -1,9 +1,10 @@
-import {Stack, StackProps} from 'aws-cdk-lib';
+import {RemovalPolicy, Stack, StackProps} from 'aws-cdk-lib';
 import {Construct} from 'constructs';
 import {Secret} from "aws-cdk-lib/aws-secretsmanager";
-import {Cluster, ContainerImage, FargateService, FargateTaskDefinition} from "aws-cdk-lib/aws-ecs";
+import {Cluster, ContainerImage, FargateService, FargateTaskDefinition, LogDriver} from "aws-cdk-lib/aws-ecs";
 import {DockerImageAsset} from "aws-cdk-lib/aws-ecr-assets";
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2";
+import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -11,6 +12,12 @@ export class InfraStack extends Stack {
 
     const botTokenSecret = new Secret(this, 'BotTokenSecret', {
       secretName: 'DiscordBotToken'
+    });
+
+    const serviceLogs = new LogGroup(this, 'ServiceLogs', {
+      logGroupName: 'TheRealObama/app',
+      removalPolicy: RemovalPolicy.DESTROY,
+      retention: RetentionDays.SIX_MONTHS
     });
 
     const serviceDockerImage = new DockerImageAsset(this,'ServiceImage', {
@@ -21,8 +28,14 @@ export class InfraStack extends Stack {
       memoryLimitMiB: 4096
     });
     serviceTaskDefinition.addContainer('Service', {
-      image: ContainerImage.fromDockerImageAsset(serviceDockerImage)
+      image: ContainerImage.fromDockerImageAsset(serviceDockerImage),
+      logging: LogDriver.awsLogs({
+        logGroup: serviceLogs,
+        streamPrefix: 'TheRealObama'
+      })
     });
+
+    botTokenSecret.grantRead(serviceTaskDefinition.taskRole);
 
     const serviceVpc = new Vpc(this, 'ServiceVpc', {
       subnetConfiguration: [
