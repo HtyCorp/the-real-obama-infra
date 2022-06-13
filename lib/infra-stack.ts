@@ -25,13 +25,13 @@ export class InfraStack extends Stack {
     });
 
     const serviceVpc = new Vpc(this, 'ServiceVpc', {
-      // subnetConfiguration: [
-      //   {
-      //     name: 'public',
-      //     subnetType: SubnetType.PUBLIC,
-      //     cidrMask: 24
-      //   }
-      // ]
+      subnetConfiguration: [
+        {
+          name: 'public',
+          subnetType: SubnetType.PUBLIC,
+          cidrMask: 20
+        }
+      ]
     });
     const fargateCluster = new Cluster(this, 'Cluster', {
       vpc: serviceVpc,
