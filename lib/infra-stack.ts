@@ -49,8 +49,7 @@ export class InfraStack extends Stack {
           capacityProvider: 'FARGATE_SPOT',
           weight: 1
         }
-      ],
-      desiredCount: 0
+      ]
     });
   }
 }
