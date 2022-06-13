@@ -16,14 +16,14 @@ export class PipelineStack extends Stack {
             synth: new CodeBuildStep('BuildProject', {
                 input: githubRepo('the-real-obama-infra'),
                 additionalInputs: {
-                    '../service': githubRepo('the-real-obama')
+                    '../the-real-obama': githubRepo('the-real-obama')
                 },
                 installCommands: [
-                    '(cd ../service && ./install.sh)',
+                    '(cd ../the-real-obama && ./install.sh)',
                     './install.sh',
                 ],
                 commands: [
-                    '(cd ../service && ./build.sh)',
+                    '(cd ../the-real-obama && ./build.sh)',
                     './build.sh'
                 ],
                 buildEnvironment: {
