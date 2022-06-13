@@ -35,7 +35,8 @@ export class InfraStack extends Stack {
       taskDefinition: serviceTaskDefinition,
       capacityProviderStrategies: [
         {
-          capacityProvider: 'FARGATE_SPOT'
+          capacityProvider: 'FARGATE_SPOT',
+          weight: 1
         }
       ]
     });
