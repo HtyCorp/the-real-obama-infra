@@ -2,6 +2,7 @@ import {Stack, StackProps} from "aws-cdk-lib";
 import {Construct} from "constructs";
 import {CodeBuildStep, CodePipeline, CodePipelineSource} from "aws-cdk-lib/pipelines";
 import {PipelineStage} from "./pipeline-stage";
+import {ComputeType, LinuxBuildImage} from "aws-cdk-lib/aws-codebuild";
 
 const githubConnectionArn = 'arn:aws:codestar-connections:ap-southeast-2:770847600512:connection/978e0be3-2c47-4d77-84a9-2593fb20e6b0'
 
@@ -18,13 +19,17 @@ export class PipelineStack extends Stack {
                     '../service': githubRepo('the-real-obama')
                 },
                 installCommands: [
-                    '(cd ../service && bash install.sh)',
-                    'bash install.sh',
+                    '(cd ../service && ./install.sh)',
+                    './install.sh',
                 ],
                 commands: [
-                    '(cd ../service && bash build.sh)',
-                    'bash build.sh'
-                ]
+                    '(cd ../service && ./build.sh)',
+                    './build.sh'
+                ],
+                buildEnvironment: {
+                    buildImage: LinuxBuildImage.STANDARD_5_0,
+                    computeType: ComputeType.LARGE
+                }
             })
         });
 
