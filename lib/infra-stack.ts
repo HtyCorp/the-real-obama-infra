@@ -3,6 +3,7 @@ import {Construct} from 'constructs';
 import {Secret} from "aws-cdk-lib/aws-secretsmanager";
 import {Cluster, ContainerImage, FargateService, FargateTaskDefinition} from "aws-cdk-lib/aws-ecs";
 import {DockerImageAsset} from "aws-cdk-lib/aws-ecr-assets";
+import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2";
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -23,7 +24,17 @@ export class InfraStack extends Stack {
       image: ContainerImage.fromDockerImageAsset(serviceDockerImage)
     });
 
+    const serviceVpc = new Vpc(this, 'ServiceVpc', {
+      // subnetConfiguration: [
+      //   {
+      //     name: 'public',
+      //     subnetType: SubnetType.PUBLIC,
+      //     cidrMask: 24
+      //   }
+      // ]
+    });
     const fargateCluster = new Cluster(this, 'Cluster', {
+      vpc: serviceVpc,
       enableFargateCapacityProviders: true
     });
     const fargateService = new FargateService(this, 'Service', {
@@ -38,7 +49,8 @@ export class InfraStack extends Stack {
           capacityProvider: 'FARGATE_SPOT',
           weight: 1
         }
-      ]
+      ],
+      desiredCount: 0
     });
   }
 }
