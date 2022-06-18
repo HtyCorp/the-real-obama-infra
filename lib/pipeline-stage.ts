@@ -7,6 +7,6 @@ export class PipelineStage extends Stage {
     constructor(scope: Construct, id: string, props?: StageProps) {
         super(scope, id, props);
 
-        const infraStack = new InfraStack(this, 'InfraStack');
+        new InfraStack(this, 'InfraStack');
     }
 }

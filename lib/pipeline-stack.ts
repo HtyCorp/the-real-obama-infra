@@ -33,7 +33,7 @@ export class PipelineStack extends Stack {
             })
         });
 
-        const beta = pipeline.addStage(new PipelineStage(this, 'Beta'));
+        pipeline.addStage(new PipelineStage(this, 'Beta'));
     }
 }
 

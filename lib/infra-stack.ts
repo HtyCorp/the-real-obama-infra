@@ -5,6 +5,8 @@ import {Cluster, ContainerImage, FargateService, FargateTaskDefinition, LogDrive
 import {DockerImageAsset} from "aws-cdk-lib/aws-ecr-assets";
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2";
 import {LogGroup, RetentionDays} from "aws-cdk-lib/aws-logs";
+import {Bucket} from "aws-cdk-lib/aws-s3";
+import {AttributeType, BillingMode, Table} from "aws-cdk-lib/aws-dynamodb";
 
 export class InfraStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -50,7 +52,7 @@ export class InfraStack extends Stack {
       vpc: serviceVpc,
       enableFargateCapacityProviders: true
     });
-    const fargateService = new FargateService(this, 'Service', {
+    new FargateService(this, 'Service', {
       cluster: fargateCluster,
       assignPublicIp: true,
       circuitBreaker: {
@@ -64,5 +66,26 @@ export class InfraStack extends Stack {
         }
       ]
     });
+
+    const wordAudioBucket = new Bucket(this, 'WordAudioBucket', {
+      removalPolicy: RemovalPolicy.RETAIN,
+      bucketName: 'htycorp-therealobama-word-audio'
+    });
+    wordAudioBucket.grantRead(serviceTaskDefinition.taskRole);
+
+    const wordMetadataTable = new Table(this, 'WordMetadataTable', {
+      removalPolicy: RemovalPolicy.RETAIN,
+      tableName: 'WordMetadata',
+      billingMode: BillingMode.PAY_PER_REQUEST,
+      partitionKey: {
+        name: 'word',
+        type: AttributeType.STRING
+      },
+      sortKey: {
+        name: 'variant',
+        type: AttributeType.STRING
+      }
+    });
+    wordMetadataTable.grantReadData(serviceTaskDefinition.taskRole);
   }
 }
