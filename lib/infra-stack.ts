@@ -69,7 +69,7 @@ export class InfraStack extends Stack {
 
     const wordAudioBucket = new Bucket(this, 'WordAudioBucket', {
       removalPolicy: RemovalPolicy.RETAIN,
-      bucketName: 'htycorp-therealobama-word-audio'
+      bucketName: 'htycorp-therealobama-audio-words'
     });
     wordAudioBucket.grantRead(serviceTaskDefinition.taskRole);
 
