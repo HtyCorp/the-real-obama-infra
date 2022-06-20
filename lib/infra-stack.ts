@@ -84,7 +84,8 @@ export class InfraStack extends Stack {
       sortKey: {
         name: 'variant',
         type: AttributeType.STRING
-      }
+      },
+      pointInTimeRecovery: true
     });
     wordMetadataTable.grantReadData(serviceTaskDefinition.taskRole);
   }
