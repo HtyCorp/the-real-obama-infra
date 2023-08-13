@@ -15,6 +15,9 @@ export class InfraStack extends Stack {
     const botTokenSecret = new Secret(this, 'BotTokenSecret', {
       secretName: 'DiscordBotToken'
     });
+    const hamishCharacterBotTokenSecret = new Secret(this, 'HamishCharacterBotTokenSecret', {
+      secretName: 'HamishCharacterDiscordBotToken'
+    });
 
     const serviceLogs = new LogGroup(this, 'ServiceLogs', {
       logGroupName: 'TheRealObama/app',
@@ -38,6 +41,7 @@ export class InfraStack extends Stack {
     });
 
     botTokenSecret.grantRead(serviceTaskDefinition.taskRole);
+    hamishCharacterBotTokenSecret.grantRead(serviceTaskDefinition.taskRole);
 
     const serviceVpc = new Vpc(this, 'ServiceVpc', {
       subnetConfiguration: [
